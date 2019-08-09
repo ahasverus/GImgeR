@@ -35,7 +35,7 @@ pictures_path <- "path_to_folder_to_store_pictures"
 
 #' ---------------------------------------------------------------------------- LoadCodeSource
 
-source(file.path(repos_path, "R", "get_google_images.R"))
+source(file.path(repos_path, "R", "get_google_pictures.R"))
 
 
 #' ---------------------------------------------------------------------------- SingleTerm
