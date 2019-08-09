@@ -94,7 +94,7 @@ get_google_pictures <- function(
       verbose  = FALSE
     )
 
-    cat(paste0("  -[] Opening ", browser, "\n"))
+    cat(paste0("  -[x] Opening ", browser, "\n"))
 
 
 
@@ -105,7 +105,7 @@ get_google_pictures <- function(
 
     rs_client$navigate(url)
 
-    cat(paste0("  -[] Browsing: \"", url, "\"\n"))
+    cat(paste0("  -[x] Browsing: \"", url, "\"\n"))
 
 
 
@@ -179,7 +179,7 @@ get_google_pictures <- function(
     }
 
 
-    cat(paste("  -[]", length(thumb_links), "on", n_photos, "images found\n"))
+    cat(paste("  -[x]", length(thumb_links), "on", n_photos, "images found\n"))
 
     photo_id <- as.numeric(format(Sys.time(), "%Y%m%d%H%M%S"))
     count    <- 0
@@ -192,7 +192,7 @@ get_google_pictures <- function(
 #'  -------------------------------------------------------------------------   @GoToOriginalImage
 
 
-      cat(paste0("  -[] Trying to download picture #", k, "...\r"))
+      cat(paste0("  -[ ] Trying to download picture #", k, "...\r"))
 
       rs_client$navigate(thumb_links[k])
 
@@ -242,8 +242,9 @@ get_google_pictures <- function(
       rs_client$goBack()
     }
 
-    cat(paste0("\n  -[] ", count, " on ", length(thumb_links)," pictures successfully downloaded\n"))
-    cat(paste0("  -[] Pictures saved in: ", path, "\n"))
+    cat(paste0("  -[x] Trying to download picture #", k, "...\r"))
+    cat(paste0("\n  -[x] ", count, " on ", length(thumb_links)," pictures successfully downloaded\n"))
+    cat(paste0("  -[x] Pictures saved in: ", path, "/\n"))
 
 
 
@@ -253,6 +254,6 @@ get_google_pictures <- function(
     rs_client$close()
     xxx <- rs_driver$server$stop()
 
-    cat(paste0("  -[] Closing ", browser, "\n\n"))
+    cat(paste0("  -[x] Closing ", browser, "\n\n"))
   }
 }
