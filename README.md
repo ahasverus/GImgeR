@@ -26,18 +26,36 @@ Usage
 --------
 
 ```r
-#' -------------------------------------------------- @LoadCodeSource
 
-source("path_to_git_repos/R/get_google_images.R")
+#' ---------------------------------------------------------------------------- DefinePaths
+
+repos_path    <- "path_to_git_repos"
+pictures_path <- "path_to_folder_to_store_pictures"
 
 
-#' -------------------------------------------------- @ExecuteCodeSource
+#' ---------------------------------------------------------------------------- LoadCodeSource
+
+source(file.path(repos_path, "R", "get_google_images.R"))
+
+
+#' ---------------------------------------------------------------------------- SingleTerm
 
 get_google_pictures(
-  search_term  = "whale drone photo aerial",
-  n_photos     = 1000,
+  search_terms = "whale",
+  n_photos     = 20,
   first_img    = 1,
-  path         = "path_to_folder_to_store_pictures",
+  path         = pictures_path,
+  browser      = "firefox"
+)
+
+
+#' ---------------------------------------------------------------------------- MulipleTerms
+
+get_google_pictures(
+  search_terms = paste(c("whale", "shark"), "drone photo aerial"),
+  n_photos     = 20,
+  first_img    = 1,
+  path         = pictures_path,
   browser      = "firefox"
 )
 

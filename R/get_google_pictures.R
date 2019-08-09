@@ -4,7 +4,7 @@
 #' This function downloads pictures from Google Images website using Selenium
 #' technology and the package \{code\link[RSelenium]{RSelenium}}.
 #'
-#' @param search_term [string] A vector of terms to search pictures for.
+#' @param search_terms [string] A vector of terms to search pictures for.
 #' @param n_photos [numeric] The number of pictures to download by search terms.
 #' @param first_img [numeric] The position of the starting picture (default 1).
 #' @param path [string] The directory to save pictures.
@@ -19,7 +19,7 @@
 #' @examples
 #'
 #' get_google_pictures(
-#'   search_term = "whale drone photo aerial",
+#'   search_terms = "whale drone photo aerial",
 #'   n_photos    = 1000,
 #'   first_img   = 1,
 #'   path        = "~/Desktop",
@@ -27,23 +27,40 @@
 #' )
 
 get_google_pictures <- function(
-  search_term = NULL, n_photos = 50, first_img = 1, path = ".", browser = "firefox") {
+  search_terms = NULL, n_photos = 50, first_img = 1, path = ".", browser = "firefox") {
 
 
 #'  -------------------------------------------------------------------------   @LoadAddings
 
 
-    require("RSelenium")
+  require("RSelenium")
+
+  opath <- path
 
 
 
 #'  -------------------------------------------------------------------------   @EscapeCharacters
 
 
-    search_term <- gsub("[[:space:]]+", " ", search_term)
-    search_term <- gsub("^[[:space:]]|[[:space:]]$", "", search_term)
-    search_term <- gsub("[[:space:]]", "+", search_term)
+  search_terms <- unlist(
+    lapply(
+      search_terms,
+      function(x) {
+        x <- gsub("[[:space:]]+", " ", x)
+        x <- gsub("^[[:space:]]|[[:space:]]$", "", x)
+        x <- gsub("[[:space:]]", "+", x)
+      }
+    ),
+    use.names = FALSE
+  )
 
+
+
+  for (search_term in search_terms) {
+
+
+
+    cat(paste0("\n>>> Searching pictures for: \"", search_term, "\"\n\n"))
 
 
 #'  -------------------------------------------------------------------------   @WriteURLQuery
@@ -63,7 +80,7 @@ get_google_pictures <- function(
 #'  -------------------------------------------------------------------------   @OutputDirectory
 
 
-    path <- file.path(path, "pictures", search_term)
+    path <- file.path(opath, "pictures", gsub("[[:punct:]]", "_", search_term))
     dir.create(path, recursive = TRUE, showWarnings = FALSE)
 
 
@@ -77,13 +94,18 @@ get_google_pictures <- function(
       verbose  = FALSE
     )
 
+    cat(paste0("  -[] Opening ", browser, "\n"))
+
 
 
 #'  -------------------------------------------------------------------------   @OpenURLInBrowser
 
+
     rs_client <- rs_driver$client
 
     rs_client$navigate(url)
+
+    cat(paste0("  -[] Browsing: \"", url, "\"\n"))
 
 
 
@@ -157,9 +179,10 @@ get_google_pictures <- function(
     }
 
 
-    cat(paste("\n>>>", length(thumb_links), "on", n_photos, "images found.\n"))
+    cat(paste("  -[]", length(thumb_links), "on", n_photos, "images found\n"))
 
     photo_id <- as.numeric(format(Sys.time(), "%Y%m%d%H%M%S"))
+    count    <- 0
 
 
     for (k in 1:length(thumb_links)) {
@@ -169,7 +192,7 @@ get_google_pictures <- function(
 #'  -------------------------------------------------------------------------   @GoToOriginalImage
 
 
-      cat(paste0(">>> Downloading image #", k, "\r"))
+      cat(paste0("  -[] Trying to download picture #", k, "...\r"))
 
       rs_client$navigate(thumb_links[k])
 
@@ -194,7 +217,7 @@ get_google_pictures <- function(
 #'  -------------------------------------------------------------------------   @DownloadImages
 
 
-      xxx <- tryCatch({
+      attempt <- tryCatch({
         download.file(
           url       = img_link,
           destfile  = file.path(path, paste0("IMG", photo_id, ".jpg")),
@@ -203,7 +226,12 @@ get_google_pictures <- function(
         error = function(e){}
       )
 
-      photo_id <- photo_id + 1
+      if (!is.null(attempt)) {
+
+        count    <- count + 1
+        photo_id <- photo_id + 1
+      }
+
 
 
 
@@ -214,6 +242,9 @@ get_google_pictures <- function(
       rs_client$goBack()
     }
 
+    cat(paste0("\n  -[] ", count, " on ", length(thumb_links)," pictures successfully downloaded\n"))
+    cat(paste0("  -[] Pictures saved in: ", path, "\n"))
+
 
 
   #'  -------------------------------------------------------------------------   @CloseSeleniumServer
@@ -222,5 +253,6 @@ get_google_pictures <- function(
     rs_client$close()
     xxx <- rs_driver$server$stop()
 
-    cat("\n\n")
+    cat(paste0("  -[] Closing ", browser, "\n\n"))
+  }
 }
