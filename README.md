@@ -25,6 +25,14 @@ The *Selenium* technology remotely takes the control of a web browser among: [*G
 Usage
 --------
 
+First, clone the repository:
+
+```bash
+git clone https://github.com/ahasverus/GImgeR.git
+```
+
+Then, open R (or Rstudio if you prefer) and enjoy.
+
 ```r
 
 #' ---------------------------------------------------------------------------- DefinePaths
