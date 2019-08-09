@@ -28,6 +28,7 @@ Usage
 First, clone the repository:
 
 ```bash
+cd ~/Desktop/
 git clone https://github.com/ahasverus/GImgeR.git
 ```
 
