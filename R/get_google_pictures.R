@@ -33,8 +33,6 @@ get_google_pictures <- function(
 #'  -------------------------------------------------------------------------   @LoadAddings
 
 
-  require("RSelenium")
-
   opath <- path
 
 
